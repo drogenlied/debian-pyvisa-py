@@ -2,7 +2,7 @@
 #DH_VERBOSE = 1
 
 %:
-	dh $@ 
+	dh $@ --with python2
 
 override_dh_auto_clean:
 	$(RM) -r PyVISA_py.egg-info
