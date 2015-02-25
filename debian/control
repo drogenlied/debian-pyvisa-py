@@ -2,7 +2,7 @@ Source: pyvisa-py
 Section: electronics
 Priority: extra
 Maintainer: Ruben Undheim <ruben.undheim@gmail.com>
-Build-Depends: debhelper (>= 9), dh-python
+Build-Depends: debhelper (>= 9), dh-python, python-setuptools, python-all-dev
 Standards-Version: 3.9.6
 Homepage: https://github.com/hgrecco/pyvisa-py
 #Vcs-Git: git://anonscm.debian.org/collab-maint/pyvisa-py.git
