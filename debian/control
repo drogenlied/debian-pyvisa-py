@@ -1,6 +1,6 @@
 Source: pyvisa-py
-Section: unknown
-Priority: optional
+Section: electronics
+Priority: extra
 Maintainer: Ruben Undheim <ruben.undheim@gmail.com>
 Build-Depends: debhelper (>= 9)
 Standards-Version: 3.9.6
@@ -11,5 +11,8 @@ Homepage: https://github.com/hgrecco/pyvisa-py
 Package: pyvisa-py
 Architecture: all
 Depends: ${misc:Depends}
-Description: <insert up to 60 chars description>
- <insert long description, indented with spaces>
+Description: Backend that implements a large part of the VISA in pure Python
+ PyVISA started as wrapper for the NI-VISA library and therefore you need to
+ install National Instruments VISA library in your system. This works most of
+ the time, for most people. But NI-VISA is a proprietary library that only works
+ on certain systems. That is when PyVISA-py jumps in.

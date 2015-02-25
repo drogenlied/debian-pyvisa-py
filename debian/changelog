@@ -1,4 +1,4 @@
-pyvisa-py (0.1-1) unstable; urgency=low
+pyvisa-py (0.1-1) experimental; urgency=low
 
   * Initial release (Closes: #775764)
 
