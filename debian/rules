@@ -4,3 +4,7 @@
 %:
 	dh $@ 
 
+override_dh_auto_clean:
+	$(RM) -r PyVISA_py.egg-info
+	dh_auto_clean
+
