@@ -1,7 +1,8 @@
 Source: pyvisa-py
 Section: electronics
 Priority: extra
-Maintainer: Ruben Undheim <ruben.undheim@gmail.com>
+Maintainer: Debian Python Modules Team <python-modules-team@lists.alioth.debian.org>
+Uploaders: Ruben Undheim <ruben.undheim@gmail.com>
 Build-Depends: debhelper (>= 9), dh-python, python-setuptools, python-all-dev
 Standards-Version: 3.9.6
 X-Python-Version: all
