@@ -3,7 +3,8 @@ Upstream-Name: pyvisa-py
 Source: https://github.com/hgrecco/pyvisa-py
 
 Files: *
-Copyright: 2014 Hernan E. Grecco <hernan.grecco@gmail.com>
+Copyright: 2014 PyVISA-py Authors and contributors
+           2014 Hernan E. Grecco <hernan.grecco@gmail.com>
            2014 Lance McCulley <lancemcculley@gmail.com>
            2014 Tobias Müller <Tobias_Mueller@twam.info>
 License: MIT
