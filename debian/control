@@ -13,7 +13,7 @@ Homepage: https://github.com/hgrecco/pyvisa-py
 
 Package: pyvisa-py
 Architecture: all
-Depends: ${misc:Depends}, ${python:Depends}, pyvisa (>= 1.6)
+Depends: ${misc:Depends}, ${python:Depends}, pyvisa
 Description: Backend that implements a large part of the VISA in pure Python
  PyVISA started as wrapper for the NI-VISA library and therefore you need to
  install National Instruments VISA library in your system. This works most of
