@@ -4,10 +4,10 @@ Priority: extra
 Maintainer: Ruben Undheim <ruben.undheim@gmail.com>
 Build-Depends: debhelper (>= 9), dh-python, python-setuptools, python-all-dev
 Standards-Version: 3.9.6
-Homepage: https://github.com/hgrecco/pyvisa-py
-#Vcs-Git: git://anonscm.debian.org/collab-maint/pyvisa-py.git
-#Vcs-Browser: http://anonscm.debian.org/?p=collab-maint/pyvisa-py.git;a=summary
 X-Python-Version: all
+Vcs-Browser: https://anonscm.debian.org/cgit/python-modules/packages/pyvisa-py.git
+Vcs-Git: git://anonscm.debian.org/python-modules/packages/pyvisa-py.git
+Homepage: https://github.com/hgrecco/pyvisa-py
 
 Package: pyvisa-py
 Architecture: all
