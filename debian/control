@@ -1,6 +1,6 @@
 Source: pyvisa-py
-Section: electronics
-Priority: extra
+Section: python
+Priority: optional
 Maintainer: Debian Python Modules Team <python-modules-team@lists.alioth.debian.org>
 Uploaders: Ruben Undheim <ruben.undheim@gmail.com>
 Build-Depends: debhelper (>= 9), dh-python, python-setuptools, python,
@@ -11,7 +11,7 @@ Vcs-Browser: https://anonscm.debian.org/cgit/python-modules/packages/pyvisa-py.g
 Vcs-Git: git://anonscm.debian.org/python-modules/packages/pyvisa-py.git
 Homepage: https://github.com/hgrecco/pyvisa-py
 
-Package: pyvisa-py
+Package: python-pyvisa-py
 Architecture: all
 Depends: ${misc:Depends}, ${python:Depends}, pyvisa
 Description: Backend that implements a large part of the VISA in pure Python
