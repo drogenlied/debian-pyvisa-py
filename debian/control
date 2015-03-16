@@ -3,9 +3,15 @@ Section: python
 Priority: optional
 Maintainer: Debian Python Modules Team <python-modules-team@lists.alioth.debian.org>
 Uploaders: Ruben Undheim <ruben.undheim@gmail.com>
-Build-Depends: debhelper (>= 9), dh-python, python-setuptools, python
+Build-Depends: debhelper (>= 9),
+               dh-python,
+               python-all,
+               python-setuptools,
+               python3-all,
+               python3-setuptools
 Standards-Version: 3.9.6
 X-Python-Version: all
+X-Python3-Version: >= 3.1
 Vcs-Browser: https://anonscm.debian.org/cgit/python-modules/packages/pyvisa-py.git
 Vcs-Git: git://anonscm.debian.org/python-modules/packages/pyvisa-py.git
 Homepage: https://github.com/hgrecco/pyvisa-py
@@ -18,3 +24,14 @@ Description: Backend that implements a large part of the VISA in pure Python
  install National Instruments VISA library in your system. This works most of
  the time, for most people. But NI-VISA is a proprietary library that only works
  on certain systems. That is when PyVISA-py jumps in.
+
+Package: python3-pyvisa-py
+Architecture: all
+Depends: ${misc:Depends}, ${python3:Depends}, python3-pyvisa
+Description: Backend that implements a large part of the VISA in pure Python3
+ PyVISA started as wrapper for the NI-VISA library and therefore you need to
+ install National Instruments VISA library in your system. This works most of
+ the time, for most people. But NI-VISA is a proprietary library that only works
+ on certain systems. That is when PyVISA-py jumps in.
+ .
+ This package provides Python3 bindings for pyvisa-py.
