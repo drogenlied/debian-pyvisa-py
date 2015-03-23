@@ -19,8 +19,9 @@ Homepage: https://github.com/hgrecco/pyvisa-py
 Package: python-pyvisa-py
 Architecture: all
 Depends: ${misc:Depends}, ${python:Depends}, python-pyvisa
-Description: Python VISA bindings for GPIB, RS232, and USB instruments
- This is a backend that implements a large part of the VISA in pure Python.
+Description: Backend that implements a large part of the VISA in pure Python
+ This library provides Python VISA bindings for GPIB, RS232, and USB
+ instruments.
  .
  PyVISA started as wrapper for the NI-VISA library and therefore you need to
  install National Instruments VISA library in your system. This works most of
@@ -30,8 +31,9 @@ Description: Python VISA bindings for GPIB, RS232, and USB instruments
 Package: python3-pyvisa-py
 Architecture: all
 Depends: ${misc:Depends}, ${python3:Depends}, python3-pyvisa
-Description: Python3 VISA bindings for GPIB, RS232, and USB instruments
- This is a backend that implements a large part of the VISA in pure Python.
+Description: Backend that implements a large part of the VISA in pure Python3
+ This library provides Python VISA bindings for GPIB, RS232, and USB
+ instruments.
  .
  PyVISA started as wrapper for the NI-VISA library and therefore you need to
  install National Instruments VISA library in your system. This works most of
