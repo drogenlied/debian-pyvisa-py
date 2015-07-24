@@ -1,6 +1,7 @@
 pyvisa-py (0.1-2) unstable; urgency=low
 
   * Uploaded to unstable
+  * Added debian/pydist-overrides to prevent the dependency on pyvisa
 
  -- Ruben Undheim <ruben.undheim@gmail.com>  Thu, 11 Jun 2015 08:39:44 +0000
 
