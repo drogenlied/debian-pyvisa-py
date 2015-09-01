@@ -15,12 +15,12 @@ from __future__ import division, unicode_literals, print_function, absolute_impo
 import warnings
 
 import random
-import re
 
-from pyvisa import constants, errors, highlevel, logger
+from pyvisa import constants, errors, highlevel, rname
 from pyvisa.compat import integer_types, OrderedDict
 
-from . import common, sessions
+from . import sessions
+from .common import logger
 
 
 class PyVisaLibrary(highlevel.VisaLibraryBase):
@@ -41,15 +41,27 @@ class PyVisaLibrary(highlevel.VisaLibraryBase):
     # Try to import packages implementing lower level functionality.
     try:
         from .serial import SerialSession
+        logger.debug('SerialSession was correctly imported.')
     except ImportError as e:
-        pass
+        logger.debug('SerialSession was not imported %s.' % e)
 
     try:
-        from .usb import USBSession
+        from .usb import USBSession, USBRawSession
+        logger.debug('USBSession and USBRawSession were correctly imported.')
     except ImportError as e:
-        pass
+        logger.debug('USBSession and USBRawSession were not imported %s.' % e)
 
-    from .tcpip import TCPIPSession
+    try:
+        from .tcpip import TCPIPSession
+        logger.debug('TCPIPSession was correctly imported.')
+    except ImportError as e:
+        logger.debug('TCPIPSession was not imported %s.' % e)
+
+    try:
+        from .gpib import GPIBSession
+        logger.debug('GPIBSession was correctly imported.')
+    except ImportError as e:
+        logger.debug('GPIBSession was not imported %s.' % e)
 
     @classmethod
     def get_session_classes(cls):
@@ -73,7 +85,6 @@ class PyVisaLibrary(highlevel.VisaLibraryBase):
                 d[key_name] = getattr(val, 'session_issue').split('\n')
             except AttributeError:
                 d[key_name] = 'Available ' + val.get_low_level_info()
-
 
         return d
 
@@ -171,11 +182,11 @@ class PyVisaLibrary(highlevel.VisaLibraryBase):
             raise ValueError('open_timeout (%r) must be an integer (or compatible type)' % open_timeout)
 
         try:
-            parsed = common.parse_resource_name(resource_name)
-        except common.InvalidResourceName:
+            parsed = rname.parse_resource_name(resource_name)
+        except rname.InvalidResourceName:
             return 0, constants.StatusCode.error_invalid_resource_name
 
-        cls = sessions.Session.get_session_class(parsed['interface_type'], parsed['resource_class'])
+        cls = sessions.Session.get_session_class(parsed.interface_type_const, parsed.resource_class)
 
         sess = cls(session, resource_name, parsed)
 
@@ -192,7 +203,7 @@ class PyVisaLibrary(highlevel.VisaLibraryBase):
         """
         try:
             sess = self.sessions[session]
-            if not sess is self:
+            if sess is not self:
                 sess.close()
         except KeyError:
             return constants.StatusCode.error_invalid_object
@@ -207,26 +218,10 @@ class PyVisaLibrary(highlevel.VisaLibraryBase):
         """
         return self._register(self), constants.StatusCode.success
 
-    def find_next(self, find_list):
-        """Returns the next resource from the list of resources found during a previous call to find_resources().
+    def list_resources(self, session, query='?*::INSTR'):
+        """Returns a tuple of all connected devices matching query.
 
-        Corresponds to viFindNext function of the VISA library.
-
-        :param find_list: Describes a find list. This parameter must be created by find_resources().
-        :return: Returns a string identifying the location of a device, return value of the library call.
-        :rtype: unicode (Py2) or str (Py3), VISAStatus
-        """
-        return next(find_list), constants.StatusCode.success
-
-    def find_resources(self, session, query):
-        """Queries a VISA system to locate the resources associated with a specified interface.
-
-        Corresponds to viFindRsrc function of the VISA library.
-
-        :param session: Unique logical identifier to a session (unused, just to uniform signatures).
-        :param query: A regular expression followed by an optional logical expression. Use '?*' for all.
-        :return: find_list, return_counter, instrument_description, return value of the library call.
-        :rtype: ViFindList, int, unicode (Py2) or str (Py3), VISAStatus
+        :param query: regular expression used to match devices.
         """
 
         # For each session type, ask for the list of connected resources and
@@ -235,51 +230,12 @@ class PyVisaLibrary(highlevel.VisaLibraryBase):
         resources = sum([st.list_resources()
                          for key, st in sessions.Session.iter_valid_session_classes()], [])
 
-        query = query.replace('?*', '.*')
-        matcher = re.compile(query, re.IGNORECASE)
+        resources = rname.filter(resources, query)
 
-        resources = [res for res in resources if matcher.match(res)]
-
-        count = len(resources)
-        resources = iter(resources)
-        if count:
-            return resources, count, next(resources), constants.StatusCode.success
+        if resources:
+            return resources
 
         raise errors.VisaIOError(errors.StatusCode.error_resource_not_found.value)
-
-    def parse_resource(self, session, resource_name):
-        """Parse a resource string to get the interface information.
-
-        Corresponds to viParseRsrc function of the VISA library.
-
-        :param session: Resource Manager session (should always be the Default Resource Manager for VISA
-                        returned from open_default_resource_manager()).
-        :param resource_name: Unique symbolic name of a resource.
-        :return: Resource information with interface type and board number, return value of the library call.
-        :rtype: :class:`pyvisa.highlevel.ResourceInfo`, :class:`pyvisa.constants.StatusCode`
-        """
-        return self.parse_resource_extended(session, resource_name)
-
-    def parse_resource_extended(self, session, resource_name):
-        """Parse a resource string to get extended interface information.
-
-        Corresponds to viParseRsrcEx function of the VISA library.
-
-        :param session: Resource Manager session (should always be the Default Resource Manager for VISA
-                        returned from open_default_resource_manager()).
-        :param resource_name: Unique symbolic name of a resource.
-        :return: Resource information, return value of the library call.
-        :rtype: :class:`pyvisa.highlevel.ResourceInfo`, :class:`pyvisa.constants.StatusCode`
-        """
-        try:
-            parsed = common.parse_resource_name(resource_name)
-
-            return (highlevel.ResourceInfo(parsed['interface_type'],
-                                           parsed['board'],
-                                           parsed['resource_class'], None, None),
-                    constants.StatusCode.success)
-        except ValueError:
-            return 0, constants.StatusCode.error_invalid_resource_name
 
     def read(self, session, count):
         """Reads data from device or interface synchronously.
@@ -324,7 +280,7 @@ class PyVisaLibrary(highlevel.VisaLibraryBase):
         :param session: Unique logical identifier to a session, event, or find list.
         :param attribute: Resource attribute for which the state query is made (see Attributes.*)
         :return: The state of the queried attribute for a specified resource, return value of the library call.
-        :rtype: unicode (Py2) or str (Py3), list or other type, VISAStatus
+        :rtype: unicode | str | list | int, VISAStatus
         """
         try:
             sess = self.sessions[session]
@@ -348,6 +304,15 @@ class PyVisaLibrary(highlevel.VisaLibraryBase):
         try:
             sess = self.sessions[session]
         except KeyError:
-            return None, constants.StatusCode.error_invalid_object
+            return constants.StatusCode.error_invalid_object
 
         return sess.set_attribute(attribute, attribute_state)
+    
+    def disable_event(self, session, event_type, mechanism):
+        # TODO: implement this for GPIB finalization
+        pass
+
+    def discard_events(self, session, event_type, mechanism):
+        # TODO: implement this for GPIB finalization
+        pass
+

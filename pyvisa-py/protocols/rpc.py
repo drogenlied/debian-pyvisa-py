@@ -28,7 +28,10 @@ import sys
 import enum
 import xdrlib
 import socket
-import struct
+
+from pyvisa.compat import struct
+
+from ..common import logger
 
 #: Version of the protocol
 RPCVERSION = 2
@@ -103,14 +106,18 @@ class AuthStatus(enum.IntEnum):
 class RPCError(Exception):
     pass
 
+
 class RPCBadFormat(RPCError):
     pass
+
 
 class RPCBadVersion(RPCError):
     pass
 
+
 class RPCGarbageArgs(RPCError):
     pass
+
 
 class RPCUnpackError(RPCError):
     pass
@@ -161,7 +168,7 @@ class Unpacker(xdrlib.Unpacker):
     def unpack_auth(self):
         flavor = self.unpack_enum()
         stuff = self.unpack_opaque()
-        return (flavor, stuff)
+        return flavor, stuff
 
     def unpack_callheader(self):
         xid = self.unpack_uint()
@@ -224,12 +231,14 @@ class Client(object):
         self.prog = prog
         self.vers = vers
         self.port = port
-        self.lastxid = 0 # XXX should be more random?
+        self.lastxid = 0  # XXX should be more random?
         self.cred = None
         self.verf = None
 
     def make_call(self, proc, args, pack_func, unpack_func):
         # Don't normally override this (but see Broadcast)
+        logger.debug('Make call %r, %r, %r, %r', proc, args, pack_func, unpack_func)
+
         if pack_func is None and args is not None:
             raise TypeError('non-null args with null pack_func')
         self.start_call(proc)
@@ -284,6 +293,7 @@ def sendfrag(sock, last, frag):
 
 
 def sendrecord(sock, record):
+    logger.debug('Sending record through %s: %s', sock, record)
     sendfrag(sock, 1, record)
 
 
@@ -310,6 +320,9 @@ def recvrecord(sock):
     while not last:
         last, frag = recvfrag(sock)
         record = record + frag
+
+    logger.debug('Received record through %s: %r', sock, record)
+
     return record
 
 
@@ -321,10 +334,12 @@ class RawTCPClient(Client):
         self.connect()
     
     def connect(self):
+        logger.debug('RawTCPClient: connecting to socket at (%s, %s)', self.host, self.port)
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.sock.connect((self.host, self.port))
         
     def close(self):
+        logger.debug('RawTCPClient: closing socket')
         self.sock.close()
     
     def do_call(self):
@@ -347,10 +362,12 @@ class RawUDPClient(Client):
         self.connect()
     
     def connect(self):
+        logger.debug('RawTCPClient: connecting to socket at (%s, %s)', self.host, self.port)
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.sock.connect((self.host, self.port))
         
     def close(self):
+        logger.debug('RawTCPClient: closing socket')
         self.sock.close()
 
     def do_call(self):
@@ -359,9 +376,9 @@ class RawUDPClient(Client):
         try:
             from select import select
         except ImportError:
-            print('WARNING: select not found, RPC may hang')
+            logger.warn('select not found, RPC may hang')
             select = None
-        BUFSIZE = 8192 # Max UDP buffer size
+        BUFSIZE = 8192  # Max UDP buffer size
         timeout = 1
         count = 5
         while 1:
@@ -370,9 +387,10 @@ class RawUDPClient(Client):
                 r, w, x = select(r, w, x, timeout)
             if self.sock not in r:
                 count = count - 1
-                if count < 0: raise RPCError('timeout')
+                if count < 0:
+                    raise RPCError('timeout')
                 if timeout < 25:
-                    timeout = timeout *2
+                    timeout = timeout * 2
                 self.sock.send(call)
                 continue
             reply = self.sock.recv(BUFSIZE)
@@ -401,7 +419,7 @@ class RawBroadcastUDPClient(RawUDPClient):
         self.reply_handler = reply_handler
 
     def set_timeout(self, timeout):
-        self.timeout = timeout # Use None for infinite timeout
+        self.timeout = timeout  # Use None for infinite timeout
 
     def make_call(self, proc, args, pack_func, unpack_func):
         if pack_func is None and args is not None:
@@ -414,12 +432,13 @@ class RawBroadcastUDPClient(RawUDPClient):
         try:
             from select import select
         except ImportError:
-            print('WARNING: select not found, broadcast will hang')
+            logger.warn('select not found, broadcast will hang')
             select = None
-        BUFSIZE = 8192 # Max UDP buffer size (for reply)
+        BUFSIZE = 8192  # Max UDP buffer size (for reply)
         replies = []
         if unpack_func is None:
-            def dummy(): pass
+            def dummy():
+                pass
             unpack_func = dummy
         while 1:
             r, w, x = [self.sock], [], []
@@ -451,13 +470,20 @@ PMAP_PROG = 100000
 PMAP_VERS = 2
 PMAP_PORT = 111
 
+
 class PortMapperVersion(enum.IntEnum):
-    null = 0                       # (void) -> void
-    set = 1                        # (mapping) -> bool
-    unset = 2                      # (mapping) -> bool
-    get_port = 3                    # (mapping) -> unsigned int
-    dump = 4                       # (void) -> pmaplist
-    call_it = 5                     # (call_args) -> call_result
+    #: (void) -> void
+    null = 0
+    #: (mapping) -> bool
+    set = 1
+    #: (mapping) -> bool
+    unset = 2
+    #: (mapping) -> unsigned int
+    get_port = 3
+    #: (void) -> pmaplist
+    dump = 4
+    #: (call_args) -> call_result
+    call_it = 5
 
 # A mapping is (prog, vers, prot, port) and prot is one of:
 
@@ -639,10 +665,10 @@ class BroadcastUDPClient(Client):
 class Server(object):
 
     def __init__(self, host, prog, vers, port):
-        self.host = host # Should normally be '' for default interface
+        self.host = host  # Should normally be '' for default interface
         self.prog = prog
         self.vers = vers
-        self.port = port # Should normally be 0 for random port
+        self.port = port  # Should normally be 0 for random port
         self.port = port
         self.addpackers()
 
@@ -667,7 +693,7 @@ class Server(object):
         self.packer.pack_uint(xid)
         temp = self.unpacker.unpack_enum()
         if temp != MessagegType.call:
-            return None # Not worthy of a reply
+            return None  # Not worthy of a reply
         self.packer.pack_uint(MessagegType.reply)
         temp = self.unpacker.unpack_uint()
         if temp != RPCVERSION:
@@ -698,7 +724,7 @@ class Server(object):
         cred = self.unpacker.unpack_auth()
         verf = self.unpacker.unpack_auth()
         try:
-            meth() # Unpack args, call turn_around(), pack reply
+            meth()  # Unpack args, call turn_around(), pack reply
         except (EOFError, RPCGarbageArgs):
             # Too few or too many arguments
             self.packer.reset()
@@ -716,7 +742,8 @@ class Server(object):
             raise RPCGarbageArgs
         self.packer.pack_uint(AcceptStatus.success)
 
-    def handle_0(self): # Handle NULL message
+    def handle_0(self):
+        # Handle NULL message
         self.turn_around()
 
     def addpackers(self):
@@ -749,7 +776,7 @@ class TCPServer(Server):
             except EOFError:
                 break
             except socket.error:
-                print('socket error:', sys.exc_info()[0])
+                logger.exception('socket error: %r', sys.exc_info()[0])
                 break
             reply = self.handle(call)
             if reply is not None:
@@ -773,7 +800,7 @@ class TCPServer(Server):
         pid = None
         try:
             pid = os.fork()
-            if pid: # Parent
+            if pid:  # Parent
                 connection[0].close()
                 return
             # Child

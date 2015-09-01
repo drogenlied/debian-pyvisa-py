@@ -15,7 +15,7 @@ from __future__ import division, unicode_literals, print_function, absolute_impo
 import abc
 import time
 
-from pyvisa import logger, constants, attributes, compat
+from pyvisa import logger, constants, attributes, compat, rname
 
 from . import common
 
@@ -59,7 +59,7 @@ class Session(compat.with_metaclass(abc.ABCMeta)):
 
         :param attribute: Resource attribute for which the state query is made
         :return: The state of the queried attribute for a specified resource, return value of the library call.
-        :rtype: unicode (Py2) or str (Py3), list or other type, VISAStatus
+        :rtype: (unicode | str | list | int, VISAStatus)
         """
 
     @abc.abstractmethod
@@ -149,6 +149,7 @@ class Session(compat.with_metaclass(abc.ABCMeta)):
         :type interface_type: constants.InterfaceType
         :type resource_class: str
         """
+        # noinspection PyUnusedLocal
         def _internal(*args, **kwargs):
             raise ValueError(msg)
 
@@ -162,11 +163,11 @@ class Session(compat.with_metaclass(abc.ABCMeta)):
 
     def __init__(self, resource_manager_session, resource_name, parsed=None):
         if isinstance(resource_name, common.MockInterface):
-            parsed = common.parse_resource_name(resource_name.resource_name)
+            parsed = rname.parse_resource_name(resource_name.resource_name)
             parsed['mock'] = resource_name
 
         elif parsed is None:
-            parsed = common.parse_resource_name(resource_name)
+            parsed = rname.parse_resource_name(resource_name)
 
         self.parsed = parsed
 
@@ -177,9 +178,9 @@ class Session(compat.with_metaclass(abc.ABCMeta)):
         #: Values are get or set automatically by get_attribute and set_attribute
         #: Add your own by overriding after_parsing.
         self.attrs = {constants.VI_ATTR_RM_SESSION: resource_manager_session,
-                      constants.VI_ATTR_RSRC_NAME: parsed['canonical_resource_name'],
-                      constants.VI_ATTR_RSRC_CLASS: parsed['resource_class'],
-                      constants.VI_ATTR_INTF_TYPE: parsed['interface_type']}
+                      constants.VI_ATTR_RSRC_NAME: str(parsed),
+                      constants.VI_ATTR_RSRC_CLASS: parsed.resource_class,
+                      constants.VI_ATTR_INTF_TYPE: parsed.interface_type}
         self.after_parsing()
 
     def after_parsing(self):
@@ -194,7 +195,7 @@ class Session(compat.with_metaclass(abc.ABCMeta)):
 
         :param attribute: Resource attribute for which the state query is made
         :return: The state of the queried attribute for a specified resource, return value of the library call.
-        :rtype: unicode (Py2) or str (Py3), list or other type, VISAStatus
+        :rtype: (unicode | str | list | int, VISAStatus)
         """
 
         # Check if the attribute value is defined.
@@ -212,7 +213,7 @@ class Session(compat.with_metaclass(abc.ABCMeta)):
             raise Exception('Do not now how to handle write only attributes.')
 
         # First try to answer those attributes that are common to all session types
-        # or user defined becasue they are not defined by the interface.
+        # or user defined because they are not defined by the interface.
         if attribute in self.attrs:
             return self.attrs[attribute], constants.StatusCode.success
 
@@ -222,10 +223,10 @@ class Session(compat.with_metaclass(abc.ABCMeta)):
         # Dispatch to `_get_attribute`, which must be implemented by subclasses.
 
         try:
-            return self._get_attribute(attribute), constants.StatusCode.success
+            return self._get_attribute(attribute)
         except UnknownAttribute as e:
             logger.exception(str(e))
-            return constants.StatusCode.error_nonsupported_attribute
+            return 0, constants.StatusCode.error_nonsupported_attribute
 
     def set_attribute(self, attribute, attribute_state):
         """Set the attribute_state value for a given VISA attribute for this session.
@@ -266,7 +267,7 @@ class Session(compat.with_metaclass(abc.ABCMeta)):
 
             return constants.StatusCode.success
 
-         # Dispatch to `_set_attribute`, which must be implemented by subclasses.
+        # Dispatch to `_set_attribute`, which must be implemented by subclasses.
 
         try:
             return self._set_attribute(attribute, attribute_state)
