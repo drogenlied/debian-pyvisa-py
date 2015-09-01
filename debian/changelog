@@ -1,3 +1,10 @@
+pyvisa-py (0.2-1) unstable; urgency=low
+
+  * New upstream release
+    - Added year 2015 to debian/copyright
+
+ -- Ruben Undheim <ruben.undheim@gmail.com>  Tue, 01 Sep 2015 22:39:52 +0200
+
 pyvisa-py (0.1-2) unstable; urgency=low
 
   * Uploaded to unstable
