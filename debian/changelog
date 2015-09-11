@@ -2,10 +2,12 @@ pyvisa-py (0.2-1) unstable; urgency=low
 
   * New upstream release
     - Added year 2015 to debian/copyright
-    - Added version dependency on python-pyvisa and python3-pyvisa
+    - Added versioned dependency on python-pyvisa and python3-pyvisa
       (debian/control)
+  * debian/control
+    - Added space between Python and 3 in the description
 
- -- Ruben Undheim <ruben.undheim@gmail.com>  Tue, 01 Sep 2015 22:39:52 +0200
+ -- Ruben Undheim <ruben.undheim@gmail.com>  Fri, 11 Sep 2015 08:20:47 +0200
 
 pyvisa-py (0.1-2) unstable; urgency=low
 

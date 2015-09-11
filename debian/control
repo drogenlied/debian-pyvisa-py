@@ -31,7 +31,7 @@ Description: Backend that implements a large part of the VISA in pure Python
 Package: python3-pyvisa-py
 Architecture: all
 Depends: ${misc:Depends}, ${python3:Depends}, python3-pyvisa (>= 1.8-1)
-Description: Backend that implements a large part of the VISA in pure Python3
+Description: Backend that implements a large part of the VISA in pure Python 3
  This library provides Python VISA bindings for GPIB, RS232, and USB
  instruments.
  .
@@ -40,4 +40,4 @@ Description: Backend that implements a large part of the VISA in pure Python3
  the time, for most people. But NI-VISA is a proprietary library that only works
  on certain systems. That is when PyVISA-py jumps in.
  .
- This package provides Python3 bindings for pyvisa-py.
+ This package provides Python 3 bindings for pyvisa-py.
