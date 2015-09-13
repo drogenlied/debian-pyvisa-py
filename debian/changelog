@@ -6,8 +6,10 @@ pyvisa-py (0.2-1) unstable; urgency=low
       (debian/control)
   * debian/control
     - Added space between Python and 3 in the description
+  * debian/.git-dpm:
+    - Converted to git-dpm patch management
 
- -- Ruben Undheim <ruben.undheim@gmail.com>  Fri, 11 Sep 2015 08:20:47 +0200
+ -- Ruben Undheim <ruben.undheim@gmail.com>  Sun, 13 Sep 2015 21:13:05 +0200
 
 pyvisa-py (0.1-2) unstable; urgency=low
 
