@@ -5,16 +5,16 @@ Source: https://github.com/hgrecco/pyvisa-py
 
 Files: *
 Copyright: 2014-2015 PyVISA-py Authors and contributors
-           2014 Lance McCulley <lancemcculley@gmail.com>
+           2014      Lance McCulley <lancemcculley@gmail.com>
            2014-2015 Hernan E. Grecco <hernan.grecco@gmail.com>
            2014-2015 Tobias Müller <Tobias_Mueller@twam.info>
-           2015 Alex Forencich <alex@alexforencich.com>
-           2015 Alexander Bessman <bessman@kth.se>
-           2015 Colin Marquardt <github@marquardt-home.de>
-           2015 Martin Ritter <ritter@mpp.mpg.de>
-           2015 Sebastian Held <sebastian.held@imst.de>
-           2015 Thomas Kopp <20.kopp@gmail.com>
-           2015 Thorsten Liebig <liebig@imst.de>
+           2015      Alex Forencich <alex@alexforencich.com>
+           2015      Alexander Bessman <bessman@kth.se>
+           2015      Colin Marquardt <github@marquardt-home.de>
+           2015      Martin Ritter <ritter@mpp.mpg.de>
+           2015      Sebastian Held <sebastian.held@imst.de>
+           2015      Thomas Kopp <20.kopp@gmail.com>
+           2015      Thorsten Liebig <liebig@imst.de>
 License: MIT
 Comment: Hernan E. Grecco is the current upstream and his commits (and copyright
          dates) can be checked at https://github.com/hgrecco/pyvisa. Copyright
@@ -22,7 +22,7 @@ Comment: Hernan E. Grecco is the current upstream and his commits (and copyright
          found in the git log at https://github.com/hgrecco/pyvisa.
 
 Files: debian/*
-Copyright: 2015 Ruben <ruben.undheim@gmail.com>
+Copyright: 2015 Ruben Undheim <ruben.undheim@gmail.com>
 License: MIT
 
 
