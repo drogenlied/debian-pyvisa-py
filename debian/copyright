@@ -1,11 +1,12 @@
 Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: pyvisa-py
+Upstream-Contact: Hernan E. Grecco <hernan.grecco@gmail.com>
 Source: https://github.com/hgrecco/pyvisa-py
 
 Files: *
 Copyright: 2014-2015 PyVISA-py Authors and contributors
-           2014-2015 Hernan E. Grecco <hernan.grecco@gmail.com>
            2014 Lance McCulley <lancemcculley@gmail.com>
+           2014-2015 Hernan E. Grecco <hernan.grecco@gmail.com>
            2014-2015 Tobias Müller <Tobias_Mueller@twam.info>
            2015 Alex Forencich <alex@alexforencich.com>
            2015 Alexander Bessman <bessman@kth.se>

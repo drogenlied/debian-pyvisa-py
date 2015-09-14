@@ -1,11 +1,13 @@
 pyvisa-py (0.2-1) unstable; urgency=low
 
   * New upstream release
-    - Added year 2015 and new AUTHORS to debian/copyright
     - Added versioned dependency on python-pyvisa and python3-pyvisa
       (debian/control)
   * debian/control
     - Added space between Python and 3 in the description
+  * debian/copyright
+    - Added year 2015 and new AUTHORS
+    - Added "Upstream-Contact" field.
   * debian/.git-dpm:
     - Converted to git-dpm patch management
 
