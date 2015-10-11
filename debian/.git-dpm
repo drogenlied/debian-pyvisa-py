@@ -6,3 +6,6 @@
 pyvisa-py_0.2.orig.tar.gz
 58f9118ee60dc08dc1ef8c5fa5c3315df374fcff
 48322
+debianTag="debian/%e%v"
+patchedTag="patched/%e%v"
+upstreamTag="upstream/%e%u"
