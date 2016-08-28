@@ -9,7 +9,7 @@ Build-Depends: debhelper (>= 9),
                python-setuptools,
                python3-all,
                python3-setuptools
-Standards-Version: 3.9.6
+Standards-Version: 3.9.8
 X-Python-Version: all
 X-Python3-Version: >= 3.1
 Vcs-Browser: https://anonscm.debian.org/cgit/python-modules/packages/pyvisa-py.git
@@ -18,7 +18,8 @@ Homepage: https://github.com/hgrecco/pyvisa-py
 
 Package: python-pyvisa-py
 Architecture: all
-Depends: ${misc:Depends}, ${python:Depends}, python-pyvisa (>= 1.8-1)
+Depends: ${misc:Depends}, ${python:Depends}
+Recommends: python-pyvisa (>= 1.8-1)
 Description: Backend that implements a large part of the VISA in pure Python
  This library provides Python VISA bindings for GPIB, RS232, and USB
  instruments.
@@ -30,7 +31,8 @@ Description: Backend that implements a large part of the VISA in pure Python
 
 Package: python3-pyvisa-py
 Architecture: all
-Depends: ${misc:Depends}, ${python3:Depends}, python3-pyvisa (>= 1.8-1)
+Depends: ${misc:Depends}, ${python3:Depends}
+Recommends: python3-pyvisa (>= 1.8-1)
 Description: Backend that implements a large part of the VISA in pure Python 3
  This library provides Python VISA bindings for GPIB, RS232, and USB
  instruments.

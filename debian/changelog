@@ -1,8 +1,14 @@
-pyvisa-py (0.2-2) UNRELEASED; urgency=medium
+pyvisa-py (0.2-2) unstable; urgency=medium
 
+  [ Ondřej Nový ]
   * Fixed VCS URL (https)
 
- -- Ondřej Nový <novy@ondrej.org>  Tue, 29 Mar 2016 22:28:58 +0200
+  [ Ruben Undheim ]
+  * debian/control:
+    - Fix circular dependency by moving python-pyvisa to Recommends
+    - New standards version 3.9.8 - no changes
+
+ -- Ruben Undheim <ruben.undheim@gmail.com>  Sun, 28 Aug 2016 13:03:59 +0200
 
 pyvisa-py (0.2-1) unstable; urgency=low
 
