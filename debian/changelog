@@ -1,6 +1,7 @@
 pyvisa-py (0.2-3) UNRELEASED; urgency=medium
 
   * d/control: Set Vcs-* to salsa.debian.org
+  * d/copyright: Use https protocol in Format field
 
  -- Ondřej Nový <onovy@debian.org>  Tue, 13 Feb 2018 10:00:56 +0100
 
