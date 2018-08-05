@@ -6,6 +6,7 @@ pyvisa-py (0.2-3) UNRELEASED; urgency=medium
   * debian/control: Remove ancient X-Python3-Version field
 
   [ Ruben Undheim ]
+  * debian/control, debian/compat: compat level 11
   * debian/watch, debian/control, debian/copyright:
     - Updated homepage URL
   * New standards version 4.2.0 - no changes
