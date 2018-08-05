@@ -1,7 +1,7 @@
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: pyvisa-py
 Upstream-Contact: Hernan E. Grecco <hernan.grecco@gmail.com>
-Source: https://github.com/hgrecco/pyvisa-py
+Source: https://github.com/pyvisa/pyvisa-py
 
 Files: *
 Copyright: 2014-2015 PyVISA-py Authors and contributors
@@ -22,7 +22,7 @@ Comment: Hernan E. Grecco is the current upstream and his commits (and copyright
          found in the git log at https://github.com/hgrecco/pyvisa.
 
 Files: debian/*
-Copyright: 2015 Ruben Undheim <ruben.undheim@gmail.com>
+Copyright: 2015-2016,2018 Ruben Undheim <ruben.undheim@gmail.com>
 License: MIT
 
 

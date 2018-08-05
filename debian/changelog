@@ -1,10 +1,16 @@
 pyvisa-py (0.2-3) UNRELEASED; urgency=medium
 
-  * d/control: Set Vcs-* to salsa.debian.org
-  * d/copyright: Use https protocol in Format field
-  * d/control: Remove ancient X-Python3-Version field
+  [ Ondřej Nový ]
+  * debian/control: Set Vcs-* to salsa.debian.org
+  * debian/copyright: Use https protocol in Format field
+  * debian/control: Remove ancient X-Python3-Version field
 
- -- Ondřej Nový <onovy@debian.org>  Tue, 13 Feb 2018 10:00:56 +0100
+  [ Ruben Undheim ]
+  * debian/watch, debian/control, debian/copyright:
+    - Updated homepage URL
+  * New standards version 4.2.0 - no changes
+
+ -- Ruben Undheim <ruben.undheim@gmail.com>  Sun, 05 Aug 2018 21:53:26 +0200
 
 pyvisa-py (0.2-2) unstable; urgency=medium
 

@@ -1,2 +1,2 @@
 version=3
-https://github.com/hgrecco/pyvisa-py/releases /hgrecco/pyvisa-py/archive/(\d\S+)\.tar\.(?:bz2|gz|xz)
+https://github.com/pyvisa/pyvisa-py/releases /pyvisa/pyvisa-py/archive/(\d\S+)\.tar\.(?:bz2|gz|xz)
