@@ -1,8 +1,12 @@
-pyvisa-py (0.2-4) UNRELEASED; urgency=medium
+pyvisa-py (0.3.0-1) UNRELEASED; urgency=medium
 
+  [ Ruben Undheim ]
+  * New upstream release
+
+  [ Ondřej Nový ]
   * Convert git repository from git-dpm to gbp layout
 
- -- Ondřej Nový <onovy@debian.org>  Wed, 08 Aug 2018 09:10:14 +0200
+ -- Ruben Undheim <ruben.undheim@gmail.com>  Mon, 10 Sep 2018 19:20:38 +0200
 
 pyvisa-py (0.2-3) unstable; urgency=medium
 
