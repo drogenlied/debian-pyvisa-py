@@ -19,12 +19,10 @@ from . import common
 
 try:
     import serial
-    from serial import Serial
     from serial.tools.list_ports import comports
 except ImportError as e:
     Session.register_unavailable(constants.InterfaceType.asrl, 'INSTR',
-                                 'Please install PySerial to use this resource type.\n%s' % e)
-
+                                 'Please install PySerial (>=3.0) to use this resource type.\n%s' % e)
     raise
 
 
@@ -37,7 +35,6 @@ def to_state(boolean_input):
 
 
 StatusCode = constants.StatusCode
-SUCCESS = StatusCode.success
 SerialTermination = constants.SerialTermination
 
 
@@ -63,37 +60,26 @@ class SerialSession(Session):
         if 'mock' in self.parsed:
             cls = self.parsed.mock
         else:
-            cls = Serial
+            cls = serial.Serial
 
-        self.interface = cls(port=self.parsed.board, timeout=2000, writeTimeout=2000)
+        self.interface = cls(port=self.parsed.board, timeout=self.timeout, write_timeout=self.timeout)
 
-        for name in 'ASRL_END_IN,ASRL_END_OUT,SEND_END_EN,TERMCHAR,' \
-                    'TERMCHAR_EN,SUPPRESS_END_EN'.split(','):
+        for name in ('ASRL_END_IN', 'ASRL_END_OUT', 'SEND_END_EN', 'TERMCHAR',
+                    'TERMCHAR_EN', 'SUPPRESS_END_EN'):
             attribute = getattr(constants, 'VI_ATTR_' + name)
             self.attrs[attribute] = attributes.AttributesByID[attribute].default
 
-    @property
-    def timeout(self):
-        value = self.interface.timeout
+    def _get_timeout(self, attribute):
+        if self.interface:
+            self.timeout = self.interface.timeout
+        return super(SerialSession, self)._get_timeout(attribute)
 
-        if value is None:
-            return constants.VI_TMO_INFINITE
-        elif value == 0:
-            return constants.VI_TMO_IMMEDIATE
-        else:
-            return int(value * 1000)
-
-    @timeout.setter
-    def timeout(self, value):
-        if value == constants.VI_TMO_INFINITE:
-            value = None
-        elif value == constants.VI_TMO_IMMEDIATE:
-            value = 0
-        else:
-            value = value / 1000.
-
-        self.interface.timeout = value
-        self.interface.writeTimeout = value
+    def _set_timeout(self, attribute, value):
+        status = super(SerialSession, self)._set_timeout(attribute, value)
+        if self.interface:
+            self.interface.timeout = self.timeout
+            self.interface.write_timeout = self.timeout
+        return status
 
     def close(self):
         self.interface.close()
@@ -172,7 +158,7 @@ class SerialSession(Session):
                 logger.debug('Serial.sendBreak')
                 self.interface.sendBreak()
 
-            return count, constants.StatusCode.success
+            return count, StatusCode.success
 
         except serial.SerialTimeoutException:
             return 0, StatusCode.error_timeout
@@ -191,10 +177,10 @@ class SerialSession(Session):
             raise NotImplementedError
 
         elif attribute == constants.VI_ATTR_ASRL_AVAIL_NUM:
-            return self.interface.inWaiting(), SUCCESS
+            return self.interface.inWaiting(), StatusCode.success
 
         elif attribute == constants.VI_ATTR_ASRL_BAUD:
-            return self.interface.baudrate, SUCCESS
+            return self.interface.baudrate, StatusCode.success
 
         elif attribute == constants.VI_ATTR_ASRL_BREAK_LEN:
             raise NotImplementedError
@@ -206,10 +192,10 @@ class SerialSession(Session):
             raise NotImplementedError
 
         elif attribute == constants.VI_ATTR_ASRL_CTS_STATE:
-            return to_state(self.interface.getCTS()), SUCCESS
+            return to_state(self.interface.getCTS()), StatusCode.success
 
         elif attribute == constants.VI_ATTR_ASRL_DATA_BITS:
-            return self.interface.bytesize, SUCCESS
+            return self.interface.bytesize, StatusCode.success
 
         elif attribute == constants.VI_ATTR_ASRL_DCD_STATE:
             raise NotImplementedError
@@ -218,7 +204,7 @@ class SerialSession(Session):
             raise NotImplementedError
 
         elif attribute == constants.VI_ATTR_ASRL_DSR_STATE:
-            return to_state(self.interface.getDSR()), SUCCESS
+            return to_state(self.interface.getDSR()), StatusCode.success
 
         elif attribute == constants.VI_ATTR_ASRL_DTR_STATE:
             raise NotImplementedError
@@ -226,20 +212,20 @@ class SerialSession(Session):
         elif attribute == constants.VI_ATTR_ASRL_FLOW_CNTRL:
             return (self.interface.xonxoff * constants.VI_ASRL_FLOW_XON_XOFF |
                     self.interface.rtscts * constants.VI_ASRL_FLOW_RTS_CTS |
-                    self.interface.dsrdtr * constants.VI_ASRL_FLOW_DTR_DSR), SUCCESS
+                    self.interface.dsrdtr * constants.VI_ASRL_FLOW_DTR_DSR), StatusCode.success
 
         elif attribute == constants.VI_ATTR_ASRL_PARITY:
             parity = self.interface.parity
             if parity == serial.PARITY_NONE:
-                return constants.Parity.none, SUCCESS
+                return constants.Parity.none, StatusCode.success
             elif parity == serial.PARITY_EVEN:
-                return constants.Parity.even, SUCCESS
+                return constants.Parity.even, StatusCode.success
             elif parity == serial.PARITY_ODD:
-                return constants.Parity.odd, SUCCESS
+                return constants.Parity.odd, StatusCode.success
             elif parity == serial.PARITY_MARK:
-                return constants.Parity.mark, SUCCESS
+                return constants.Parity.mark, StatusCode.success
             elif parity == serial.PARITY_SPACE:
-                return constants.Parity.space, SUCCESS
+                return constants.Parity.space, StatusCode.success
 
             raise Exception('Unknown parity value: %r' % parity)
 
@@ -252,11 +238,11 @@ class SerialSession(Session):
         elif attribute == constants.VI_ATTR_ASRL_STOP_BITS:
             bits = self.interface.stopbits
             if bits == serial.STOPBITS_ONE:
-                return constants.StopBits.one, SUCCESS
+                return constants.StopBits.one, StatusCode.success
             elif bits == serial.STOPBITS_ONE_POINT_FIVE:
-                return constants.StopBits.one_and_a_half, SUCCESS
+                return constants.StopBits.one_and_a_half, StatusCode.success
             elif bits == serial.STOPBITS_TWO:
-                return constants.StopBits.two, SUCCESS
+                return constants.StopBits.two, StatusCode.success
 
             raise Exception('Unknown bits value: %r' % bits)
 
@@ -264,7 +250,7 @@ class SerialSession(Session):
             raise NotImplementedError
 
         elif attribute == constants.VI_ATTR_INTF_TYPE:
-            return constants.InterfaceType.asrl, SUCCESS
+            return constants.InterfaceType.asrl, StatusCode.success
 
         raise UnknownAttribute(attribute)
 
