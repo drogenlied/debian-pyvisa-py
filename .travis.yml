@@ -1,19 +1,36 @@
 language: python
 
-python:
-  - "2.6"
-  - "2.7"
-  - "3.2"
-  - "3.3"
-  - "3.4"
+# newer python versions are available only on xenial
+# (while some older only on trusty) Ubuntu distribution
+dist: xenial
+sudo: required
+
+branches:
+  only:
+    # This is where pull requests from "bors r+" are built.
+    - staging
+    # This is where pull requests from "bors try" are built.
+    - trying
+    # Build master too
+    - master
+
+matrix:
+  include:
+  - python: 2.7
+    dist: trusty
+  - python: 3.4
+    dist: trusty
+  - python: 3.5
+    dist: trusty
+  - python: 3.6
+  - python: 3.7
 
 install:
-  - if [ $TRAVIS_PYTHON_VERSION == '2.6' ]; then pip install unittest2; fi
-  - pip install coverage coveralls
+  - pip install coverage
+  - pip install coveralls
 
 script:
-  - if [ $TRAVIS_PYTHON_VERSION == '2.6' ]; then coverage run -p --source=pyvisa-py --omit="*test*" setup.py test; fi
-  - if [ $TRAVIS_PYTHON_VERSION != '2.6' ]; then python -bb -m coverage run -p --source=pyvisa-py --omit="*test*" setup.py test; fi
+  - python -bb -m coverage run -p --source=pyvisa-py --omit="*test*" setup.py test
   - coverage combine
   - coverage report -m
 

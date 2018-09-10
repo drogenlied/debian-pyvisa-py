@@ -50,6 +50,8 @@ It depends on the interface type. For **ASRL** and **USB** we use PySerial_ and 
 respectively. For **TCPIP** we use the :py:mod:`socket` module in the Python Standard Library.
 **GPIB** resources are not currently supported but they are in the plan using `linux-gpib`_.
 
+PySerial_ version 3.0 or newer is required.
+
 
 If I only need **TCPIP**, do I need to install PySerial and PyUSB?
 ------------------------------------------------------------------
@@ -75,24 +77,18 @@ Now:
 - ASRL INSTR
 - USB INSTR
 - TCPIP INSTR
-
-Soon we will be supporting:
-
 - USB RAW
 - TCPIP SOCKET
-
-And later:
-
 - GPIB INSTR
 
-If you want that `soon` or `later` becomes now, give us a hand!
 
 
 Are all VISA attributes and methods implemented?
 ------------------------------------------------
 
-No. We have implemented those attributes and methods that are most commonly needed.
-We would like to reach feature parity. If there is something that you need, let us know.
+No. We have implemented those attributes and methods that are most commonly
+needed. We would like to reach feature parity. If there is something that you
+need, let us know.
 
 
 Why are you developing this?
@@ -105,9 +101,9 @@ We wanted to provide a compatible alternative.
 Why not using LibreVISA?
 ------------------------
 
-LibreVISA_ is still young. However, you can already use it with the NI backend as it
-has the same API. We think that PyVISA-py is easier to hack and we can quickly
-reach feature parity with NI-VISA for message-based instruments.
+LibreVISA_ is still young. However, you can already use it with the NI backend
+as it has the same API. We think that PyVISA-py is easier to hack and we can
+quickly reach feature parity with NI-VISA for message-based instruments.
 
 
 Why putting PyVISA in the middle?
@@ -125,9 +121,9 @@ from higher level applications.
 .. _PyVISA: http://pyvisa.readthedocs.org/
 .. _PyUSB: http://walac.github.io/pyusb/
 .. _PyPI: https://pypi.python.org/pypi/PyVISA-py
-.. _GitHub: https://github.com/hgrecco/pyvisa-py
+.. _GitHub: https://github.com/pyvisa/pyvisa-py
 .. _`National Instruments's VISA`: http://ni.com/visa/
 .. _`LibreVISA`: http://www.librevisa.org/
-.. _`issue tracker`: https://github.com/hgrecco/pyvisa-py/issues
+.. _`issue tracker`: https://github.com/pyvisa/pyvisa-py/issues
 .. _`linux-gpib`: http://linux-gpib.sourceforge.net/
 
