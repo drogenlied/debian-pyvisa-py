@@ -2,6 +2,7 @@ pyvisa-py (0.3.0-1) UNRELEASED; urgency=medium
 
   [ Ruben Undheim ]
   * New upstream release
+  * debian/upstream/metadata added
 
   [ Ondřej Nový ]
   * Convert git repository from git-dpm to gbp layout
