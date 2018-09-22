@@ -1,8 +1,9 @@
-pyvisa-py (0.3.0-1) UNRELEASED; urgency=medium
+pyvisa-py (0.3.1-1) UNRELEASED; urgency=medium
 
   [ Ruben Undheim ]
   * New upstream release
   * debian/upstream/metadata added
+  * debian/control: New standards version 4.2.1 - no changes
 
   [ Ondřej Nový ]
   * Convert git repository from git-dpm to gbp layout
