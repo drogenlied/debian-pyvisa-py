@@ -1,0 +1,8 @@
+#!/bin/sh
+
+set -e
+
+cd /tmp
+python3 -c "__import__('pyvisa-py')"
+
+echo "done"

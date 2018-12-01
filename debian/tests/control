@@ -1,0 +1,2 @@
+Tests: py-load
+Depends: python3-pyvisa-py
