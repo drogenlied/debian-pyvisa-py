@@ -5,28 +5,14 @@ Maintainer: Debian Python Modules Team <python-modules-team@lists.alioth.debian.
 Uploaders: Ruben Undheim <ruben.undheim@gmail.com>
 Build-Depends: debhelper-compat (= 11),
                dh-python,
-               python-all,
-               python-setuptools,
                python3-all,
-               python3-setuptools
+               python3-setuptools,
+               python3-pyvisa,
 Standards-Version: 4.2.1
 X-Python-Version: all
 Vcs-Browser: https://salsa.debian.org/python-team/modules/pyvisa-py
 Vcs-Git: https://salsa.debian.org/python-team/modules/pyvisa-py.git
 Homepage: https://github.com/pyvisa/pyvisa-py
-
-Package: python-pyvisa-py
-Architecture: all
-Depends: ${misc:Depends}, ${python:Depends}
-Recommends: python-pyvisa (>= 1.8-1)
-Description: Backend that implements a large part of the VISA in pure Python
- This library provides Python VISA bindings for GPIB, RS232, and USB
- instruments.
- .
- PyVISA started as wrapper for the NI-VISA library and therefore you need to
- install National Instruments VISA library in your system. This works most of
- the time, for most people. But NI-VISA is a proprietary library that only works
- on certain systems. That is when PyVISA-py jumps in.
 
 Package: python3-pyvisa-py
 Architecture: all
