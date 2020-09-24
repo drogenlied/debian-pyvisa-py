@@ -1,6 +1,8 @@
 pyvisa-py (0.3.1-4) UNRELEASED; urgency=medium
 
   * Bump Standards-Version to 4.4.1.
+  * d/control: Update Maintainer field with new Debian Python Team
+    contact address.
 
  -- Ondřej Nový <onovy@debian.org>  Fri, 18 Oct 2019 15:54:03 +0200
 
