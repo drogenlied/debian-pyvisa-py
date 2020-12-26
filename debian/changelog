@@ -1,12 +1,16 @@
-pyvisa-py (0.3.1-4) UNRELEASED; urgency=medium
+pyvisa-py (0.5.1-1) UNRELEASED; urgency=medium
 
+  [ Ondřej Nový ]
   * Bump Standards-Version to 4.4.1.
   * d/control: Update Maintainer field with new Debian Python Team
     contact address.
   * d/control: Update Vcs-* fields with new Debian Python Team Salsa
     layout.
 
- -- Ondřej Nový <onovy@debian.org>  Fri, 18 Oct 2019 15:54:03 +0200
+  [  ]
+  * New upstream version
+
+ --  <ruben@debmacbookvm>  Sat, 26 Dec 2020 13:08:46 +0000
 
 pyvisa-py (0.3.1-3) unstable; urgency=medium
 
