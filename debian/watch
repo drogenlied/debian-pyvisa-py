@@ -1,2 +1,2 @@
-version=3
+version=4
 https://github.com/pyvisa/pyvisa-py/releases /pyvisa/pyvisa-py/archive/(\d\S+)\.tar\.(?:bz2|gz|xz)

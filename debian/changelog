@@ -24,6 +24,7 @@ pyvisa-py (0.5.1-1) UNRELEASED; urgency=medium
 
   [  ]
   * Rules-Requires-Root: no (routine-update)
+  * Update watch file format version to 4.
 
  --  <ruben@debmacbookvm>  Sat, 26 Dec 2020 13:08:46 +0000
 
