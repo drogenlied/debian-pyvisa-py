@@ -1,4 +1,4 @@
-pyvisa-py (0.5.1-1) UNRELEASED; urgency=medium
+pyvisa-py (0.5.1-1) unstable; urgency=medium
 
   [ Ondřej Nový ]
   * Bump Standards-Version to 4.4.1.
@@ -28,7 +28,7 @@ pyvisa-py (0.5.1-1) UNRELEASED; urgency=medium
   * Remove obsolete field Name from debian/upstream/metadata (already present in
     machine-readable debian/copyright).
 
- --  <ruben@debmacbookvm>  Sat, 26 Dec 2020 13:08:46 +0000
+ -- Ruben Undheim <ruben.undheim@gmail.com>  Sat, 26 Dec 2020 13:23:24 +0000
 
 pyvisa-py (0.3.1-3) unstable; urgency=medium
 
