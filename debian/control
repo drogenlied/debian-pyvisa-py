@@ -12,6 +12,7 @@ Standards-Version: 4.5.1
 Vcs-Browser: https://salsa.debian.org/python-team/packages/pyvisa-py
 Vcs-Git: https://salsa.debian.org/python-team/packages/pyvisa-py.git
 Homepage: https://github.com/pyvisa/pyvisa-py
+Rules-Requires-Root: no
 
 Package: python3-pyvisa-py
 Architecture: all
