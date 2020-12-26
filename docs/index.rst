@@ -15,8 +15,8 @@ and some well developed, easy to deploy and cross platform libraries.
 You can select the PyVISA-py backend using **@py** when instantiating the
 visa Resource Manager:
 
-    >>> import visa
-    >>> rm = visa.ResourceManager('@py')
+    >>> import pyvisa
+    >>> rm = pyvisa.ResourceManager('@py')
     >>> rm.list_resources()
     ('USB0::0x1AB1::0x0588::DS1K00005888::INSTR')
     >>> inst = rm.open_resource('USB0::0x1AB1::0x0588::DS1K00005888::INSTR')
@@ -46,15 +46,19 @@ FAQ
 Which libraries are used by PyVISA-py?
 --------------------------------------
 
-It depends on the interface type. For **ASRL** and **USB** we use PySerial_ and PyUSB_
-respectively. For **TCPIP** we use the :py:mod:`socket` module in the Python Standard Library.
-**GPIB** resources are not currently supported but they are in the plan using `linux-gpib`_.
+It depends on the interface type. For **ASRL** and **USB** we use PySerial_ and PyUSB_,
+respectively. PySerial_ version 3.0 or newer is required.
 
-PySerial_ version 3.0 or newer is required.
+For **TCPIP** we use the :py:mod:`socket` module in the Python Standard Library.
+
+On Linux, **GPIB** resources are supported using the `linux-gpib`_ project's Python bindings.
+On Windows as well as Linux systems with proprietary GPIB device drivers, experimental GPIB
+support is available through `gpib-ctypes`_. The `gpib-ctypes`_ library is still in
+development so please report any issues you may encounter.
 
 
-If I only need **TCPIP**, do I need to install PySerial and PyUSB?
-------------------------------------------------------------------
+If I only need **TCPIP**, do I need to install PySerial, PyUSB, linux-gpib, or gpib-ctypes?
+-------------------------------------------------------------------------------------------
 
 No. Libraries are loaded on demand.
 
@@ -64,7 +68,7 @@ How do I know if PyVISA-py is properly installed?
 
 Using the pyvisa information tool. Run in your console::
 
-  python -m visa info
+  pyvisa-info
 
 You will get info about PyVISA, the installed backends and their options.
 
@@ -117,13 +121,14 @@ from higher level applications.
 
 
 
-.. _PySerial: http://pyserial.sourceforge.net/
+.. _PySerial: https://pythonhosted.org/pyserial/
 .. _PyVISA: http://pyvisa.readthedocs.org/
-.. _PyUSB: http://walac.github.io/pyusb/
+.. _PyUSB: https://github.com/pyusb/pyusb
 .. _PyPI: https://pypi.python.org/pypi/PyVISA-py
 .. _GitHub: https://github.com/pyvisa/pyvisa-py
 .. _`National Instruments's VISA`: http://ni.com/visa/
 .. _`LibreVISA`: http://www.librevisa.org/
 .. _`issue tracker`: https://github.com/pyvisa/pyvisa-py/issues
 .. _`linux-gpib`: http://linux-gpib.sourceforge.net/
+.. _`gpib-ctypes`: https://pypi.org/project/gpib-ctypes/
 
