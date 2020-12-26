@@ -1,2 +1,3 @@
 Tests: py-load
+Restrictions: superficial
 Depends: python3-pyvisa-py

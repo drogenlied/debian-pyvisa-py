@@ -11,6 +11,7 @@ pyvisa-py (0.5.1-1) unstable; urgency=medium
     - Rules-Requires-Root: no (routine-update)
     - Standards-Version: 4.5.1
   * Add salsa-ci file
+  * debian/tests/control: Mark test superficial (Closes: #974493)
   * debian/watch: Update watch file format version to 4.
   * Remove obsolete field Name from debian/upstream/metadata (already present in
     machine-readable debian/copyright).
