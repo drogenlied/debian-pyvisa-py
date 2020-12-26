@@ -18,7 +18,9 @@ Package: python3-pyvisa-py
 Architecture: all
 Depends: ${misc:Depends},
          ${python3:Depends}
-Recommends: python3-pyvisa
+Recommends: python3-pyvisa,
+            python3-serial,
+            python3-usb
 Description: Backend that implements a large part of the VISA in pure Python 3
  This library provides Python VISA bindings for GPIB, RS232, and USB
  instruments.
