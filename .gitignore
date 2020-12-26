@@ -9,7 +9,7 @@ build/
 dist/
 MANIFEST
 .tox
-.coveragerc
+.eggs
 # WebDAV file system cache files
 .DAV/
 _test/
@@ -17,3 +17,4 @@ _test/
 .mypy_cache/
 .pytest_cache/
 .cache/
+.vscode
