@@ -5,8 +5,11 @@ pyvisa-py (0.5.1-2) unstable; urgency=high
   * debian/rules:
     - Skip test if python3-pyvisa is older than 1.11.3-1. Needed
       to solve cyclic dependency causing migration problems to testing
+  * debian/tests/py-load:
+    - Skip autopktest if python3-pyvisa is older than 1.11.3-1. Needed to solve
+      a cyclic dependency causing problems with migration to testing.
 
- -- Ruben Undheim <ruben.undheim@gmail.com>  Sat, 02 Jan 2021 21:53:41 +0000
+ -- Ruben Undheim <ruben.undheim@gmail.com>  Sat, 02 Jan 2021 21:45:06 +0000
 
 pyvisa-py (0.5.1-1) unstable; urgency=medium
 

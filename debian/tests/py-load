@@ -1,5 +1,14 @@
 #!/bin/sh
 
+PYVISA_VERSION=`dpkg -s python3-pyvisa | grep Version: | cut -c 10-`
+
+if dpkg --compare-versions ${PYVISA_VERSION} lt 1.11.3-1
+then
+    echo "Skipping test since pyvisa version is older than 1.11.3-1"
+    echo "This is needed to solve a cyclic dependency problem causing problems with migration to testing"
+    exit 8
+fi
+
 set -e
 
 cd /tmp
