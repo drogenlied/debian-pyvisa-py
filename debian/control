@@ -11,7 +11,7 @@ Build-Depends: debhelper-compat (= 13),
                python3-pytest,
                python3-wheel,
                python3-toml,
-               python3-pyvisa (>= 1.11)
+               python3-pyvisa
 Standards-Version: 4.5.1
 Vcs-Browser: https://salsa.debian.org/python-team/packages/pyvisa-py
 Vcs-Git: https://salsa.debian.org/python-team/packages/pyvisa-py.git
