@@ -1,3 +1,10 @@
+pyvisa-py (0.5.1-3) UNRELEASED; urgency=medium
+
+  * Update pattern for GitHub archive URLs from /<org>/<repo>/tags
+    page/<org>/<repo>/archive/<tag> -> /<org>/<repo>/archive/refs/tags/<tag>.
+
+ -- Debian Janitor <janitor@jelmer.uk>  Thu, 26 Aug 2021 05:20:45 -0000
+
 pyvisa-py (0.5.1-2) unstable; urgency=high
 
   * debian/control:
