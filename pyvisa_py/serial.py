@@ -146,7 +146,7 @@ class SerialSession(Session):
             checker = lambda current: False
 
         elif end_in == SerialTermination.last_bit:
-            mask = 2 ** self.interface.bytesize
+            mask = 2**self.interface.bytesize
             checker = lambda current: bool(current[-1] & mask)
 
         elif end_in == SerialTermination.termination_char:
@@ -236,12 +236,7 @@ class SerialSession(Session):
             Return value of the library call.
 
         """
-        if (
-            mask & BufferOperation.discard_read_buffer
-            or mask & BufferOperation.discard_read_buffer_no_io
-            or mask & BufferOperation.discard_receive_buffer
-            or mask & BufferOperation.discard_receive_buffer2
-        ):
+        if mask & BufferOperation.discard_read_buffer:
             self.interface.reset_input_buffer()
         if (
             mask & BufferOperation.flush_write_buffer
@@ -418,7 +413,7 @@ class SerialSession(Session):
             if not isinstance(attribute_state, int):
                 return StatusCode.error_nonsupported_attribute_state
 
-            if not 0 < attribute_state < 8:
+            if not 0 <= attribute_state < 8:
                 return StatusCode.error_nonsupported_attribute_state
 
             try:

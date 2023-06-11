@@ -8,7 +8,18 @@
 """
 import abc
 import time
-from typing import Any, Callable, Dict, Iterator, List, Optional, Tuple, Type, TypeVar
+from typing import (
+    Any,
+    Callable,
+    ClassVar,
+    Dict,
+    Iterator,
+    List,
+    Optional,
+    Tuple,
+    Type,
+    TypeVar,
+)
 
 from pyvisa import attributes, constants, logger, rname
 from pyvisa.constants import ResourceAttribute, StatusCode
@@ -122,8 +133,8 @@ class Session(metaclass=abc.ABCMeta):
     #: Session type as (Interface Type, Resource Class)
     session_type: Tuple[constants.InterfaceType, str]
 
-    #: Timeout in seconds to use when opening the resource.
-    open_timeout: Optional[float]
+    #: Timeout in milliseconds to use when opening the resource.
+    open_timeout: Optional[int]
 
     #: Value of the timeout in seconds used for general operation
     timeout: Optional[float]
@@ -158,7 +169,7 @@ class Session(metaclass=abc.ABCMeta):
     ) -> Iterator[Tuple[Tuple[constants.InterfaceType, str], Type["Session"]]]:
         """Iterator over valid sessions classes infos."""
         for key, val in cls._session_classes.items():
-            if issubclass(val, Session):
+            if not issubclass(val, UnavailableSession):
                 yield key, val
 
     @classmethod
@@ -167,10 +178,8 @@ class Session(metaclass=abc.ABCMeta):
     ) -> Iterator[Tuple[Tuple[constants.InterfaceType, str], str]]:
         """Iterator over invalid sessions classes (i.e. those with import errors)."""
         for key, val in cls._session_classes.items():
-            try:
+            if issubclass(val, UnavailableSession):
                 yield key, getattr(val, "session_issue")
-            except AttributeError:
-                pass
 
     @classmethod
     def get_session_class(
@@ -223,7 +232,8 @@ class Session(metaclass=abc.ABCMeta):
                 logger.warning(
                     "%s is already registered in the "
                     "ResourceManager. Overwriting with %s",
-                    ((interface_type, resource_class), python_class),
+                    (interface_type, resource_class),
+                    python_class,
                 )
 
             python_class.session_type = (interface_type, resource_class)
@@ -257,28 +267,16 @@ class Session(metaclass=abc.ABCMeta):
 
         """
 
-        class _internal(Session):
-
+        class _internal(UnavailableSession):
             #: Message detailing why no session is available.
-            session_issue: str = msg
-
-            def __init__(self, *args, **kwargs) -> None:
-                raise ValueError(msg)
-
-            def _get_attribute(self, attr):
-                raise NotImplementedError()
-
-            def _set_attribute(self, attr, value):
-                raise NotImplementedError()
-
-            def close(self):
-                raise NotImplementedError()
+            session_issue = msg
 
         if (interface_type, resource_class) in cls._session_classes:
             logger.warning(
                 "%s is already registered in the ResourceManager. "
                 "Overwriting with unavailable %s",
-                ((interface_type, resource_class), msg),
+                (interface_type, resource_class),
+                msg,
             )
 
         cls._session_classes[(interface_type, resource_class)] = _internal
@@ -288,7 +286,7 @@ class Session(metaclass=abc.ABCMeta):
         resource_manager_session: VISARMSession,
         resource_name: str,
         parsed: Optional[rname.ResourceName] = None,
-        open_timeout: Optional[float] = None,
+        open_timeout: Optional[int] = None,
     ) -> None:
         if parsed is None:
             parsed = rname.parse_resource_name(resource_name)
@@ -324,11 +322,11 @@ class Session(metaclass=abc.ABCMeta):
 
     def after_parsing(self) -> None:
         """Override this method to provide custom initialization code, to be
-        called after the resourcename is properly parsed
+        called after the resource name is properly parsed
 
         ResourceSession can register resource specific attributes handling of
         them into self.attrs.
-        It is also possible to change handling of already registerd common
+        It is also possible to change handling of already registered common
         attributes. List of attributes is available in pyvisa package:
         * name is in constants module as: VI_ATTR_<NAME>
         * validity of attribute for resource is defined module attributes,
@@ -678,7 +676,7 @@ class Session(metaclass=abc.ABCMeta):
         session.
 
         Does a few checks before and calls before dispatching to
-        `_gst_attribute`.
+        `_set_attribute`.
 
         Parameters
         ----------
@@ -853,3 +851,19 @@ class Session(metaclass=abc.ABCMeta):
         else:
             self.timeout = value / 1000.0
         return StatusCode.success
+
+
+class UnavailableSession(Session):
+    session_issue: ClassVar[str]
+
+    def __init__(self, *args, **kwargs) -> None:
+        raise ValueError(self.session_issue)
+
+    def _get_attribute(self, attr):
+        raise NotImplementedError()
+
+    def _set_attribute(self, attr, value):
+        raise NotImplementedError()
+
+    def close(self):
+        raise NotImplementedError()

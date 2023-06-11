@@ -3,22 +3,31 @@
 
 """
 import pytest
-from pyvisa.testsuite.keysight_assisted_tests import copy_func, require_virtual_instr
-from pyvisa.testsuite.keysight_assisted_tests.test_resource_manager import (
-    TestResourceManager as BaseTestResourceManager,
+from pyvisa.rname import ResourceName
+from pyvisa.testsuite.keysight_assisted_tests import (
+    RESOURCE_ADDRESSES,
+    copy_func,
+    require_virtual_instr,
 )
 from pyvisa.testsuite.keysight_assisted_tests.test_resource_manager import (
+    TestResourceManager as BaseTestResourceManager,
     TestResourceParsing as BaseTestResourceParsing,
 )
 
 
 @require_virtual_instr
 class TestPyResourceManager(BaseTestResourceManager):
-    """"""
+    """ """
 
-    test_list_resource = pytest.mark.xfail(
-        copy_func(BaseTestResourceManager.test_list_resource)
-    )
+    def test_list_resource(self):
+        """Test listing the available resources.
+        The bot supports only TCPIP and of those resources we expect to be able
+        to list only INSTR resources not SOCKET.
+        """
+        # Default settings
+        resources = self.rm.list_resources()
+        for v in (v for v in RESOURCE_ADDRESSES.values() if v.endswith("INSTR")):
+            assert str(ResourceName.from_string(v)) in resources
 
     test_last_status = pytest.mark.xfail(
         copy_func(BaseTestResourceManager.test_last_status)
@@ -31,6 +40,6 @@ class TestPyResourceManager(BaseTestResourceManager):
 
 @require_virtual_instr
 class TestPyResourceParsing(BaseTestResourceParsing):
-    """"""
+    """ """
 
     pass

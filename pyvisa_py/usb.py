@@ -84,7 +84,7 @@ class USBSession(Session):
             self.parsed.serial_number,
         )
 
-        for name in ("SEND_END_EN", "TERMCHAR", "TERMCHAR_EN"):
+        for name in ("SEND_END_EN", "SUPPRESS_END_EN", "TERMCHAR", "TERMCHAR_EN"):
             attribute = getattr(constants, "VI_ATTR_" + name)
             self.attrs[attribute] = attributes.AttributesByID[attribute].default
 
@@ -94,7 +94,7 @@ class USBSession(Session):
 
     def _get_timeout(self, attribute: ResourceAttribute) -> Tuple[int, StatusCode]:
         if self.interface:
-            if self.interface.timeout == 2 ** 32 - 1:
+            if self.interface.timeout == 2**32 - 1:
                 self.timeout = None
             else:
                 self.timeout = self.interface.timeout / 1000
@@ -102,8 +102,8 @@ class USBSession(Session):
 
     def _set_timeout(self, attribute: ResourceAttribute, value: int) -> StatusCode:
         status = super(USBSession, self)._set_timeout(attribute, value)
-        timeout = int(self.timeout * 1000) if self.timeout else 2 ** 32 - 1
-        timeout = min(timeout, 2 ** 32 - 1)
+        timeout = int(self.timeout * 1000) if self.timeout else 2**32 - 1
+        timeout = min(timeout, 2**32 - 1)
         if self.interface:
             self.interface.timeout = timeout
         return status
@@ -315,7 +315,7 @@ class USBRawSession(USBSession):
 
             try:
                 serial = dev.serial_number
-            except (NotImplementedError, ValueError):
+            except (NotImplementedError, ValueError, usb.USBError):
                 msg = (
                     "Found a device whose serial number cannot be read."
                     " The partial VISA resource name is: " + fmt

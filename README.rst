@@ -7,10 +7,10 @@ PyVISA-py
 .. image:: https://github.com/pyvisa/pyvisa-py/workflows/Documentation%20building/badge.svg
     :target: https://github.com/pyvisa/pyvisa-py/actions
     :alt: Documentation building
-.. image:: https://dev.azure.com/pyvisa/pyvisa-py/_apis/build/status/pyvisa.pyvisa-py.keysight-assisted?branchName=master
+.. image:: https://dev.azure.com/pyvisa/pyvisa-py/_apis/build/status/pyvisa.pyvisa-py.keysight-assisted?branchName=main
     :target: https://dev.azure.com/pyvisa/pyvisa-py/_build
     :alt: Keysight assisted testing
-.. image:: https://codecov.io/gh/pyvisa/pyvisa-py/branch/master/graph/badge.svg
+.. image:: https://codecov.io/gh/pyvisa/pyvisa-py/branch/main/graph/badge.svg
     :target: https://codecov.io/gh/pyvisa/pyvisa-py
     :alt: Code Coverage
 .. image:: https://readthedocs.org/projects/pyvisa-py/badge/?version=latest
@@ -64,11 +64,15 @@ Requirements
 - Python (tested with 3.6+)
 - PyVISA 1.11+
 
-Optionally
+Optionally:
+
 - PySerial (to interface with Serial instruments)
 - PyUSB (to interface with USB instruments)
 - linux-gpib (to interface with gpib instruments, only on linux)
 - gpib-ctypes (to interface with GPIB instruments on Windows and Linux)
+- psutil (to discover TCPIP devices across multiple interfaces)
+- zeroconf (for HiSLIP and VICP devices discovery)
+- pyvicp (to enable the Teledyne LeCroy proprietary VICP protocol)
 
 
 Installation

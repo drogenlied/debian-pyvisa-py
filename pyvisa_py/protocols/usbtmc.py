@@ -182,7 +182,7 @@ class USBRaw(object):
         serial_number=None,
         device_filters=None,
         timeout=None,
-        **kwargs
+        **kwargs,
     ):
         super(USBRaw, self).__init__()
 
@@ -213,14 +213,35 @@ class USBRaw(object):
             pass
 
         try:
-            self.usb_dev.set_configuration()
-        except usb.core.USBError as e:
-            raise Exception("failed to set configuration\n %s" % e)
-
-        try:
-            self.usb_dev.set_interface_altsetting()
+            cfg = self.usb_dev.get_active_configuration()
         except usb.core.USBError:
-            pass
+            cfg = None
+
+        if cfg is None:
+            try:
+                self.usb_dev.set_configuration()
+                cfg = self.usb_dev.get_active_configuration()
+            except usb.core.USBError as e:
+                raise Exception("failed to set configuration\n %s" % e)
+
+        intf = cfg[(0, 0)]
+
+        # Check if the interface exposes multiple alternative setting and
+        # set one only if there is more than one.
+        if (
+            len(
+                tuple(
+                    usb.util.find_descriptor(
+                        cfg, find_all=True, bInterfaceNumber=intf.bInterfaceNumber
+                    )
+                )
+            )
+            > 1
+        ):
+            try:
+                self.usb_dev.set_interface_altsetting()
+            except usb.core.USBError:
+                pass
 
         self.usb_intf = self._find_interface(self.usb_dev, self.INTERFACE)
 
@@ -277,9 +298,8 @@ class USBRaw(object):
 
 
 class USBTMC(USBRaw):
-
     # Maximum number of bytes per transfer (for sending and receiving).
-    RECV_CHUNK = 1024 ** 2
+    RECV_CHUNK = 1024**2
 
     find_devices = staticmethod(find_tmc_devices)
 
@@ -288,9 +308,6 @@ class USBTMC(USBRaw):
         self.usb_intr_in = find_endpoint(
             self.usb_intf, usb.ENDPOINT_IN, usb.ENDPOINT_TYPE_INTERRUPT
         )
-
-        self.usb_dev.reset()
-        self.usb_dev.set_configuration()
 
         time.sleep(0.01)
 
@@ -438,7 +455,6 @@ class USBTMC(USBRaw):
         return size
 
     def read(self, size):
-
         recv_chunk = self.RECV_CHUNK
         if size > 0 and size < recv_chunk:
             recv_chunk = size
