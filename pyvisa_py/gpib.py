@@ -22,16 +22,27 @@ try:
     from gpib_ctypes.Gpib import Gpib  # typing: ignore
     from gpib_ctypes.gpib.gpib import _lib as gpib_lib  # typing: ignore
 
-    # Add some extra binding not available by default
-    extra_funcs = [
-        ("ibcac", [ctypes.c_int, ctypes.c_int], ctypes.c_int),
-        ("ibgts", [ctypes.c_int, ctypes.c_int], ctypes.c_int),
-        ("ibpct", [ctypes.c_int], ctypes.c_int),
-    ]
-    for name, argtypes, restype in extra_funcs:
-        libfunction = gpib_lib[name]
-        libfunction.argtypes = argtypes
-        libfunction.restype = restype
+    try:
+        # Add some extra binding not available by default
+        extra_funcs = [
+            ("ibcac", [ctypes.c_int, ctypes.c_int], ctypes.c_int),
+            ("ibgts", [ctypes.c_int, ctypes.c_int], ctypes.c_int),
+            ("ibpct", [ctypes.c_int], ctypes.c_int),
+        ]
+        for name, argtypes, restype in extra_funcs:
+            libfunction = gpib_lib[name]
+            libfunction.argtypes = argtypes
+            libfunction.restype = restype
+    except TypeError:
+        msg = (
+            "gpib_ctypes is installed but could not locate the gpib library.\n"
+            "Please manually load it using:\n"
+            "  gpib_ctypes.gpib.gpib._load_lib(filename)\n"
+            "before importing pyvisa."
+        )
+        Session.register_unavailable(constants.InterfaceType.gpib, "INSTR", msg)
+        Session.register_unavailable(constants.InterfaceType.gpib, "INTFC", msg)
+        raise
 
 except ImportError:
     GPIB_CTYPES = False
@@ -39,15 +50,13 @@ except ImportError:
         import gpib  # typing: ignore
         from Gpib import Gpib  # typing: ignore
     except ImportError as e:
-        Session.register_unavailable(
-            constants.InterfaceType.gpib,
-            "INSTR",
-            "Please install linux-gpib (Linux) or "
-            "gpib-ctypes (Windows, Linux) to use "
-            "this resource type. Note that installing"
-            " gpib-ctypes will give you access to a "
-            "broader range of funcionality.\n%s" % e,
+        msg = (
+            "Please install linux-gpib (Linux) or gpib-ctypes (Windows, Linux) "
+            "to use this resource type. Note that installing gpib-ctypes will "
+            "give you access to a broader range of functionalities.\n%s" % e
         )
+        Session.register_unavailable(constants.InterfaceType.gpib, "INSTR", msg)
+        Session.register_unavailable(constants.InterfaceType.gpib, "INTFC", msg)
         raise
 
 
@@ -188,7 +197,7 @@ def convert_gpib_error(
     # feels brittle. As a consequence we only try to be smart when using
     # gpib-ctypes. However in both cases we log the exception at debug level.
     else:
-        logger.debug("Failed to %s.", exc_info=error)
+        logger.debug("Failed to %s.", operation, exc_info=error)
         if not GPIB_CTYPES:
             return StatusCode.error_system_error
         if error.code == 1:
@@ -255,6 +264,8 @@ class _GPIBCommon(Session):
 
     def after_parsing(self) -> None:
         minor = int(self.parsed.board)
+        # Secondary address (SAD) values should be in the range 96 to 126,
+        # 0 means the SAD is disabled.
         sad = 0
         timeout = 13
         send_eoi = 1

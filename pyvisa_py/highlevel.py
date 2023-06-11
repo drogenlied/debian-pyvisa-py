@@ -13,7 +13,7 @@ from typing import Any, Dict, Iterable, List, Optional, Tuple, Union, cast
 from pyvisa import constants, highlevel, rname
 from pyvisa.constants import StatusCode
 from pyvisa.typing import VISAEventContext, VISARMSession, VISASession
-from pyvisa.util import LibraryPath
+from pyvisa.util import DebugInfo, LibraryPath
 
 from . import sessions
 from .common import logger
@@ -75,7 +75,7 @@ class PyVisaLibrary(highlevel.VisaLibraryBase):
         return (LibraryPath("py"),)
 
     @staticmethod
-    def get_debug_info() -> Dict[str, Union[str, List[str], Dict[str, str]]]:
+    def get_debug_info() -> DebugInfo:
         """Return a list of lines with backend info."""
         from . import __version__
 
@@ -116,7 +116,7 @@ class PyVisaLibrary(highlevel.VisaLibraryBase):
         session: VISARMSession,
         resource_name: str,
         access_mode: constants.AccessModes = constants.AccessModes.no_lock,
-        open_timeout: int = constants.VI_TMO_IMMEDIATE,
+        open_timeout: Optional[int] = constants.VI_TMO_IMMEDIATE,
     ) -> Tuple[VISASession, StatusCode]:
         """Opens a session to the specified resource.
 
@@ -145,7 +145,7 @@ class PyVisaLibrary(highlevel.VisaLibraryBase):
 
         """
         try:
-            open_timeout = int(open_timeout)
+            open_timeout = None if open_timeout is None else int(open_timeout)
         except ValueError:
             raise ValueError(
                 "open_timeout (%r) must be an integer (or compatible type)"
@@ -175,7 +175,7 @@ class PyVisaLibrary(highlevel.VisaLibraryBase):
 
         Parameters
         ----------
-        session : typin.VISASession
+        session : typing.VISASession
             Unique logical identifier to a session.
 
         Returns
@@ -752,7 +752,7 @@ class PyVisaLibrary(highlevel.VisaLibraryBase):
             Return value of the library call.
 
         """
-        pass
+        return StatusCode.error_nonimplemented_operation
 
     def discard_events(
         self,
@@ -779,4 +779,4 @@ class PyVisaLibrary(highlevel.VisaLibraryBase):
             Return value of the library call.
 
         """
-        pass
+        return StatusCode.error_nonimplemented_operation

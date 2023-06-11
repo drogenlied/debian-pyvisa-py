@@ -10,10 +10,14 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 
+import datetime
 import os
 import sys
-import datetime
-from importlib.metadata import version as get_version
+
+if sys.version_info >= (3, 8):
+    from importlib.metadata import version as get_version
+else:
+    from importlib_metadata import version as get_version
 
 
 # If extensions (or modules to document with autodoc) are in another directory,
