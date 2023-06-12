@@ -1,15 +1,19 @@
-Index: pyvisa-py/setup.py
+Index: pyvisa-py/pyproject.toml
 ===================================================================
---- pyvisa-py.orig/setup.py
-+++ pyvisa-py/setup.py
-@@ -3,4 +3,9 @@
- from setuptools import setup
+--- pyvisa-py.orig/pyproject.toml
++++ pyvisa-py/pyproject.toml
+@@ -61,6 +61,14 @@ changelog = "https://github.com/pyvisa/p
+ requires = ["setuptools>=61.2", "wheel", "setuptools_scm[toml]>=3.4.3"]
+ build-backend = "setuptools.build_meta"
  
- if __name__ == "__main__":
--    setup(use_scm_version=True)
-+    setup(use_scm_version=True, packages=[
-+        'pyvisa_py',
-+        'pyvisa_py.protocols',
-+        'pyvisa_py.testsuite',
-+        'pyvisa_py.testsuite.keysight_assisted_tests',
-+        ])
++[tool.setuptools]
++packages=[
++	'pyvisa_py',
++	'pyvisa_py.protocols',
++	'pyvisa_py.testsuite',
++	'pyvisa_py.testsuite.keysight_assisted_tests',
++]
++
+ [tool.setuptools_scm]
+ write_to = "pyvisa_py/version.py"
+ write_to_template = """
