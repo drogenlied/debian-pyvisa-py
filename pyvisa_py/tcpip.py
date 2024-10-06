@@ -6,6 +6,7 @@
 :license: MIT, see LICENSE for more details.
 
 """
+
 import ipaddress
 import random
 import select
@@ -147,9 +148,9 @@ class TCPIPInstrHiSLIP(Session):
         self.attrs[ResourceAttribute.interface_instrument_name] = "TCPIP0 (HiSLIP)"
         self.attrs[ResourceAttribute.interface_number] = 0
         self.attrs[ResourceAttribute.io_prot] = constants.VI_PROT_NORMAL
-        self.attrs[
-            ResourceAttribute.read_buffer_operation_mode
-        ] = constants.VI_FLUSH_DISABLE
+        self.attrs[ResourceAttribute.read_buffer_operation_mode] = (
+            constants.VI_FLUSH_DISABLE
+        )
         self.attrs[ResourceAttribute.resource_lock_state] = constants.VI_NO_LOCK
         self.attrs[ResourceAttribute.send_end_enabled] = constants.VI_TRUE
         self.attrs[ResourceAttribute.suppress_end_enabled] = constants.VI_FALSE
@@ -163,9 +164,9 @@ class TCPIPInstrHiSLIP(Session):
         self.attrs[ResourceAttribute.tcpip_port] = port
         self.attrs[ResourceAttribute.termchar] = ord("\n")
         self.attrs[ResourceAttribute.termchar_enabled] = constants.VI_FALSE
-        self.attrs[
-            ResourceAttribute.write_buffer_operation_mode
-        ] = constants.VI_FLUSH_WHEN_FULL
+        self.attrs[ResourceAttribute.write_buffer_operation_mode] = (
+            constants.VI_FLUSH_WHEN_FULL
+        )
 
         # configure the variable attributes
         self.attrs[ResourceAttribute.tcpip_hislip_max_message_kb] = (
@@ -857,9 +858,9 @@ class TCPIPInstrVicp(Session):
         self.attrs[ResourceAttribute.interface_instrument_name] = "TCPIP0 (VICP)"
         self.attrs[ResourceAttribute.interface_number] = 0
         self.attrs[ResourceAttribute.io_prot] = constants.VI_PROT_NORMAL
-        self.attrs[
-            ResourceAttribute.read_buffer_operation_mode
-        ] = constants.VI_FLUSH_DISABLE
+        self.attrs[ResourceAttribute.read_buffer_operation_mode] = (
+            constants.VI_FLUSH_DISABLE
+        )
         self.attrs[ResourceAttribute.resource_lock_state] = constants.VI_NO_LOCK
         self.attrs[ResourceAttribute.suppress_end_enabled] = constants.VI_FALSE
         self.attrs[ResourceAttribute.tcpip_address] = self.parsed.host_address
@@ -867,9 +868,9 @@ class TCPIPInstrVicp(Session):
         self.attrs[ResourceAttribute.tcpip_is_hislip] = constants.VI_FALSE
         self.attrs[ResourceAttribute.tcpip_nodelay] = constants.VI_TRUE
         self.attrs[ResourceAttribute.tcpip_port] = port
-        self.attrs[
-            ResourceAttribute.write_buffer_operation_mode
-        ] = constants.VI_FLUSH_WHEN_FULL
+        self.attrs[ResourceAttribute.write_buffer_operation_mode] = (
+            constants.VI_FLUSH_WHEN_FULL
+        )
 
         # configure the variable attributes
         self.attrs[ResourceAttribute.tcpip_keepalive] = (
@@ -1146,7 +1147,7 @@ class TCPIPSocketSession(Session):
             chunk_length = self.max_recv_size
 
         term_char, _ = self.get_attribute(ResourceAttribute.termchar)
-        term_byte = common.int_to_byte(term_char) if term_char else b""
+        term_byte = common.int_to_byte(term_char) if term_char is not None else b""
         term_char_en, _ = self.get_attribute(ResourceAttribute.termchar_enabled)
         suppress_end_en, _ = self.get_attribute(ResourceAttribute.suppress_end_enabled)
 
@@ -1345,9 +1346,9 @@ class TCPIPSocketSession(Session):
             self.interface.setsockopt(
                 socket.SOL_SOCKET, socket.SO_KEEPALIVE, 1 if attribute_state else 0
             )
-            self.interface.sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_KEEPIDLE, 60)
-            self.interface.sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_KEEPINTVL, 60)
-            self.interface.sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_KEEPCNT, 5)
+            self.interface.setsockopt(socket.IPPROTO_TCP, socket.TCP_KEEPIDLE, 60)
+            self.interface.setsockopt(socket.IPPROTO_TCP, socket.TCP_KEEPINTVL, 60)
+            self.interface.setsockopt(socket.IPPROTO_TCP, socket.TCP_KEEPCNT, 5)
             return StatusCode.success
         return StatusCode.error_nonsupported_attribute
 
