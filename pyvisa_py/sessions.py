@@ -6,6 +6,7 @@
 :license: MIT, see LICENSE for more details.
 
 """
+
 import abc
 import time
 from typing import (
@@ -149,9 +150,9 @@ class Session(metaclass=abc.ABCMeta):
     #: Maps (Interface Type, Resource Class) to Python class encapsulating that
     #: resource.
     #: dict[(Interface Type, Resource Class) , Session]
-    _session_classes: Dict[
-        Tuple[constants.InterfaceType, str], Type["Session"]
-    ] = dict()
+    _session_classes: ClassVar[
+        Dict[Tuple[constants.InterfaceType, str], Type["Session"]]
+    ] = {}
 
     @staticmethod
     def list_resources() -> List[str]:

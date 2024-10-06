@@ -10,6 +10,7 @@ This file is an offspring of the Lantz Project.
 :license: MIT, see LICENSE for more details.
 
 """
+
 import enum
 import struct
 import time
@@ -97,7 +98,7 @@ class BulkOutMessage(object):
 class BulkInMessage(
     namedtuple(
         "BulkInMessage",
-        "msgid btag btaginverse " "transfer_size transfer_attributes data",
+        "msgid btag btaginverse transfer_size transfer_attributes data",
     )
 ):
     """The Host uses the Bulk-IN endpoint to read USBTMC response messages from
@@ -113,7 +114,9 @@ class BulkInMessage(
         msgid, btag, btaginverse = struct.unpack_from("BBBx", data)
         if msgid != MsgID.dev_dep_msg_in:
             warnings.warn(
-                "Unexpected MsgID format. Consider updating the device's firmware. See https://github.com/pyvisa/pyvisa-py/issues/20"
+                "Unexpected MsgID format. Consider updating the device's firmware. "
+                "See https://github.com/pyvisa/pyvisa-py/issues/20"
+                f"Expected message id was {MsgID.dev_dep_msg_in}, got {msgid}."
             )
             return BulkInMessage.from_quirky(data)
 
@@ -200,8 +203,8 @@ class USBRaw(object):
         elif len(devices) > 1:
             desc = "\n".join(str(dev) for dev in devices)
             raise ValueError(
-                "{} devices found:\n{}\nPlease narrow the search"
-                " criteria".format(len(devices), desc)
+                f"{len(devices)} devices found:\n{desc}\nPlease narrow the search"
+                " criteria"
             )
 
         self.usb_dev = devices[0]
@@ -298,9 +301,6 @@ class USBRaw(object):
 
 
 class USBTMC(USBRaw):
-    # Maximum number of bytes per transfer (for sending and receiving).
-    RECV_CHUNK = 1024**2
-
     find_devices = staticmethod(find_tmc_devices)
 
     def __init__(self, vendor=None, product=None, serial_number=None, **kwargs):
@@ -403,7 +403,7 @@ class USBTMC(USBRaw):
             return
 
         # Read remaining data from Bulk-IN endpoint.
-        self.usb_recv_ep.read(self.RECV_CHUNK, abort_timeout_ms)
+        self.usb_recv_ep.read(self.usb_recv_ep.wMaxPacketSize, abort_timeout_ms)
 
         # Send CHECK_ABORT_BULK_IN_STATUS until it completes.
         # According to USBTMC 1.00 4.2.1.5:
@@ -443,7 +443,7 @@ class USBTMC(USBRaw):
         # Set the EOM flag on the last transfer only.
         # Send at least one transfer (possibly empty).
         while (end == 0) or (end < size):
-            begin, end = end, begin + self.RECV_CHUNK
+            begin, end = end, begin + self.usb_send_ep.wMaxPacketSize
 
             self._btag = (self._btag % 255) + 1
 
@@ -455,12 +455,12 @@ class USBTMC(USBRaw):
         return size
 
     def read(self, size):
-        recv_chunk = self.RECV_CHUNK
-        if size > 0 and size < recv_chunk:
-            recv_chunk = size
-
         header_size = 12
         max_padding = 511
+        recv_chunk = self.usb_recv_ep.wMaxPacketSize - header_size
+
+        if size > 0 and size < recv_chunk:
+            recv_chunk = size
 
         eom = False
 

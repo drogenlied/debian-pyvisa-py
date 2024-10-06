@@ -17,15 +17,16 @@ Original source:
 :license: MIT, see LICENSE for more details.
 
 """
+
 import enum
 import select
 import socket
 import struct
 import sys
 import time
-import xdrlib
 
 from ..common import logger
+from . import xdrlib
 
 #: Version of the protocol
 RPCVERSION = 2
@@ -437,6 +438,7 @@ def _connect(sock, host, port, timeout=0):
 
         if time.time() >= finish_time:
             # reached timeout
+            sock.close()
             return False
 
         # `select_timout` decreased to 50% of previous or min_select_timeout
