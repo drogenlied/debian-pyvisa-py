@@ -26,7 +26,7 @@ override_dh_auto_clean:
 
 override_dh_auto_test:
 ifeq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
-	if dpkg --compare-versions $(PYVISA_VERSION) lt 1.11.3-1 ; then \
+	if dpkg --compare-versions $(PYVISA_VERSION) lt 1.14.0-1 ; then \
 	  echo "Skipping test since pyvisa version is older than 1.11.3-1" ; \
 	  echo "This is needed to solve a cyclic dependency problem causing problems with migration to testing" ; \
 	else \
